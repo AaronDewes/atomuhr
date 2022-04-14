@@ -1,29 +1,33 @@
 <template>
   <div>
-    <div class="time">{{ date | localizeTime }}</div>
-    <h1>atomuhr.vercel.app</h1>
-    <div class="links">
-      <a class="button" href="https://techmob.show"
-        >See who created the original version</a
-      >
-      <a class="button" href="https://github.com/AaronDewes/atomuhr">
-        Star us on GitHub
-      </a>
-    </div>
+    <main>
+      <div>
+        <div class="time">{{ localizedTime }}</div>
+        <h1>atomuhr.vercel.app</h1>
+        <div class="links">
+          <a class="button" href="https://github.com/AaronDewes"
+            >See who created this</a
+          >
+          <a class="button" href="https://github.com/AaronDewes/atomuhr">
+            Star us on GitHub
+          </a>
+        </div>
+      </div>
+    </main>
   </div>
 </template>
 
-<script>
-import Vue from 'vue'
+<script lang="ts">
+import { defineComponent } from 'vue'
 import { getServerDate } from '@/assets/js/serverDate'
 import { format } from 'date-fns'
 import { de } from 'date-fns/locale'
 
-export default Vue.extend({
-  filters: {
-    localizeTime(date) {
-      if (!date) return ''
-      return format(date, 'ppp', { locale: de })
+export default defineComponent({
+  computed: {
+    localizedTime() {
+      if (!this.date) return ''
+      return format(this.date, 'ppp', { locale: de })
     },
   },
   data() {
@@ -35,7 +39,7 @@ export default Vue.extend({
   },
   head() {
     return {
-      title: format(this.date, 'pp', { locale: de }),
+      title: this.date ? format(this.date, 'pp', { locale: de }) : "Atomuhr",
     }
   },
   beforeDestroy() {
@@ -62,6 +66,56 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
+:root {
+  --color-primary: #ff9f61;
+  --color-primary-light: #ffecdf;
+  --color-dark: #332013;
+  --color-light: #fff;
+  --color-gradient: radial-gradient(
+    129.55% 129.55% at 6.6% 2.7%,
+    #ffe897 0%,
+    #ff4820 100%
+  );
+  --transition: all 0.15s ease-in-out;
+  --border-radius: 0.25rem;
+}
+
+html {
+  font-family: Open Sans, Helvetica Neue, Arial, sans-serif;
+  font-size: 16px;
+  box-sizing: border-box;
+  color: var(--color-dark);
+  line-height: 1.75;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  background: radial-gradient(
+    129.55% 129.55% at 6.6% 2.7%,
+    rgba(255, 232, 151, 0.3) 0%,
+    rgba(255, 72, 32, 0.3) 100%
+  );
+}
+
+main {
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  @media screen and (max-width: 40rem) {
+    width: calc(100% - 4rem);
+    margin: 2rem;
+  }
+}
+
 h1 {
   opacity: 0.9;
   font-weight: normal;
