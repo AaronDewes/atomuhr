@@ -1,10 +1,12 @@
 <template>
   <div>
     <div class="time">{{ date | localizeTime }}</div>
-    <h1>atomuhr.saarland</h1>
+    <h1>atomuhr.vercel.app</h1>
     <div class="links">
-      <a class="button" href="https://techmob.show">See who created this</a>
-      <a class="button" href="https://github.com/henrystoll/atomuhr.saarland">
+      <a class="button" href="https://techmob.show"
+        >See who created the original version</a
+      >
+      <a class="button" href="https://github.com/AaronDewes/atomuhr">
         Star us on GitHub
       </a>
     </div>
