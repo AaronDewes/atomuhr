@@ -29,7 +29,7 @@ export default defineComponent({
       return format(this.date, 'ppp')
     },
     host() {
-      if (process.browser) {
+      if (window && window?.location) {
         return window.location.host;
       }
       // Fallback during SSR
