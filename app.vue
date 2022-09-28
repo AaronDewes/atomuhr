@@ -2,8 +2,8 @@
   <div>
     <main>
       <div>
-        <div class="time">{{ localizedTime }}</div>
-        <h1>atomuhr.vercel.app</h1>
+        <div class="time">{{ currentTime }}</div>
+        <h1>{{ host }}</h1>
         <div class="links">
           <a class="button" href="https://github.com/AaronDewes"
             >See who created this</a
@@ -21,14 +21,20 @@
 import { defineComponent } from 'vue'
 import { getServerDate } from '@/assets/js/serverDate'
 import { format } from 'date-fns'
-import { de } from 'date-fns/esm/locale/index.js'
 
 export default defineComponent({
   computed: {
-    localizedTime() {
+    currentTime() {
       if (!this.date) return ''
-      return format(this.date, 'ppp', { locale: de })
+      return format(this.date, 'ppp')
     },
+    host() {
+      if (process.browser) {
+        return window.location.host;
+      }
+      // Fallback during SSR
+      return "atomuhr.vercel.app";
+    }
   },
   data() {
     return {
