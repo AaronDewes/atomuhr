@@ -7,7 +7,7 @@
 const fetchSampleImplementation = async () => {
   const requestDate = new Date()
 
-  const { headers, ok, statusText } = await fetch(window.location, {
+  const { headers, ok, statusText } = await fetch(window.location.toString(), {
     cache: `no-store`,
     method: `HEAD`,
   })
@@ -17,8 +17,8 @@ const fetchSampleImplementation = async () => {
   }
 
   return {
-    requestDate,
-    responseDate: new Date(),
+    requestDate: requestDate as unknown as number,
+    responseDate: new Date()  as unknown as number,
     serverDate: new Date(headers.get(`Date`)),
   }
 }
@@ -26,10 +26,11 @@ const fetchSampleImplementation = async () => {
 export const getServerDate = async (
   { fetchSample } = { fetchSample: fetchSampleImplementation }
 ) => {
-  // modified to run not on nuxt server
-  if (!process.browser) return
-
-  let best = { uncertainty: Number.MAX_VALUE }
+  let best: {
+    date?: Date;
+    uncertainty: number;
+    offset?: number;
+  } = { uncertainty: Number.MAX_VALUE }
 
   // Fetch 10 samples to increase the chance of getting one with low
   // uncertainty.
@@ -46,7 +47,7 @@ export const getServerDate = async (
 
         best = {
           date,
-          offset: date - responseDate,
+          offset: (date as unknown as number) - responseDate,
           uncertainty,
         }
       }

@@ -1,4 +1,4 @@
-import { defineNuxtConfig } from "nuxt3";
+import { defineNuxtConfig } from "nuxt/config";
 
 // https://v3.nuxtjs.org/docs/directory-structure/nuxt.config
 export default defineNuxtConfig({
@@ -18,7 +18,9 @@ export default defineNuxtConfig({
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/icon.svg' }],
   },
-
+  modules: [
+    '@kevinmarrec/nuxt-pwa'
+  ],
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: ['@/assets/style/fontfaces.css'],
 });

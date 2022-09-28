@@ -17,58 +17,48 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { defineComponent } from 'vue'
-import { getServerDate } from '@/assets/js/serverDate'
+import { getServerDate } from '~~/assets/js/serverDate'
 import { format } from 'date-fns'
 
-export default defineComponent({
-  computed: {
-    currentTime() {
-      if (!this.date) return ''
-      return format(this.date, 'ppp')
-    },
-    host() {
-      if (window && window?.location) {
-        return window.location.host;
-      }
-      // Fallback during SSR
-      return "atomuhr.vercel.app";
-    }
-  },
-  data() {
-    return {
-      interval: null,
-      date: new Date(),
-      offset: 0,
-    }
-  },
-  head() {
-    return {
-      title: this.date ? format(this.date, 'pp', { locale: de }) : "Atomuhr",
-    }
-  },
-  beforeDestroy() {
-    clearInterval(this.interval)
-  },
-  async created() {
-    this.startInterval()
-    if (process.browser) {
-      const { date, offset, uncertainty } = await getServerDate()
-      console.log(
-        `The server's date is ${date} +/- ${uncertainty} milliseconds.`
-      )
-      this.offset = offset
-    }
-  },
-  methods: {
-    startInterval() {
-      this.interval = setInterval(() => {
-        this.date = new Date(Date.now() + this.offset)
-      }, 200)
-    },
-  },
+const date = ref(new Date())
+const interval = ref<number | null>(null)
+const offset = ref(null)
+
+const currentTime = computed(() => {
+  if (!date.value) return ''
+  return format(date.value, 'ppp')
 })
+
+const host = ref('atomuhr.vercel.app')
+onMounted(() => {
+  host.value = window.location.host
+})
+
+useHead({
+  title: computed(() => {
+    if (!date.value) return ''
+    return format(date.value, 'pp')
+  }),
+})
+onBeforeUnmount(() => {
+  clearInterval(interval.value)
+})
+const config = useRuntimeConfig()
+
+onMounted(async () => {
+  startInterval()
+  const { date, offset: serverOffset, uncertainty } = await getServerDate()
+  console.log(`The server's date is ${date} +/- ${uncertainty} milliseconds.`)
+  offset.value = serverOffset
+})
+
+function startInterval() {
+  interval.value = window.setInterval(() => {
+    date.value = new Date(Date.now() + offset.value)
+  }, 200)
+}
 </script>
 
 <style lang="scss">
